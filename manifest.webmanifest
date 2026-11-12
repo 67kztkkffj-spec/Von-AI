@@ -1,0 +1,17 @@
+{
+  "name": "VON AI \u2014 Your AI Homie",
+  "short_name": "VON AI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090909",
+  "theme_color": "#090909",
+  "description": "An independent storytelling-inspired AI companion.",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
