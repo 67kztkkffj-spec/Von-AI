@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090909">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="VON AI — an independent storytelling-inspired AI companion.">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  <title>VON AI</title>
+  <style>
+    :root{--bg:#090909;--panel:#121212;--panel2:#191714;--gold:#d7ad58;--gold2:#f1d28b;--muted:#9a9386;--line:#30291d;--white:#f5f0e7}
+    *{box-sizing:border-box} body{margin:0;background:radial-gradient(ellipse at 50% -10%,#3a2b14 0%,#15110b 30%,var(--bg) 68%);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+    button,input,textarea{font:inherit} button{cursor:pointer}
+    .app{max-width:760px;margin:auto;min-height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:20px 2px 16px;border-bottom:1px solid #292216}
+    .brand{display:flex;align-items:center;gap:11px}.mark{width:42px;height:42px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold2);font-family:Georgia,serif;font-size:20px;box-shadow:0 0 24px #d7ad5822}
+    .brand h1{font:700 17px Georgia,serif;letter-spacing:4px;margin:0}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:2px;margin-top:4px}
+    .status{font-size:10px;color:#b9a77f;border:1px solid #46391f;border-radius:99px;padding:7px 10px;letter-spacing:1px}
+    .hero{text-align:center;padding:25px 0 18px}.portrait{width:104px;height:104px;border-radius:50%;margin:0 auto 14px;border:1px solid #8e6b30;background:radial-gradient(circle at 50% 35%,#574322,#17130d 65%);display:grid;place-items:center;box-shadow:0 0 40px #d7ad581b}
+    .portrait span{font:46px Georgia,serif;color:var(--gold2)}.hero h2{font:26px Georgia,serif;letter-spacing:2px;margin:0}.hero p{color:var(--muted);font-size:12px;margin:8px 0 0}
+    .tabs{display:flex;gap:7px;margin:4px 0 14px}.tab{flex:1;background:#12110f;border:1px solid #2c261b;color:#b6aa93;border-radius:12px;padding:11px 6px;font-size:12px}.tab.active{border-color:#8d6a30;color:var(--gold2);background:#211a0e}
+    .view{display:none;flex:1;min-height:280px}.view.active{display:flex;flex-direction:column}
+    #messages{display:flex;flex-direction:column;gap:12px;overflow:auto;max-height:42dvh;padding:5px 2px 12px}
+    .bubble{max-width:88%;padding:12px 14px;border-radius:16px;font-size:14px;line-height:1.48;white-space:pre-wrap}.assistant{align-self:flex-start;background:#171512;border:1px solid #342a1a;border-bottom-left-radius:5px}.user{align-self:flex-end;background:#3a2b14;border:1px solid #735629;border-bottom-right-radius:5px}
+    .bubble .who{display:block;font-size:9px;letter-spacing:1.6px;color:var(--gold);margin-bottom:5px}
+    .composer{display:flex;gap:8px;align-items:center;margin-top:auto;padding:10px 0 8px}.composer input{min-width:0;flex:1;background:#151412;border:1px solid #383024;border-radius:14px;padding:14px;color:var(--white);outline:none}.composer input:focus{border-color:#9a7437}
+    .iconbtn,.send{border:1px solid #70552b;background:#211a0e;color:var(--gold2);border-radius:13px;min-width:46px;height:46px;font-size:18px}.send{background:linear-gradient(135deg,#e2c27b,#9b702e);color:#17110a;font-weight:700}
+    .hint{font-size:10px;color:#827967;text-align:center;padding:0 0 10px}
+    .panel{background:#13120f;border:1px solid #30291d;border-radius:16px;padding:16px;margin-bottom:12px}.panel h3{font:17px Georgia,serif;color:var(--gold2);margin:0 0 8px}.panel p{font-size:12px;line-height:1.5;color:#aaa18f;margin:0}
+    .memory-list{display:flex;flex-direction:column;gap:8px;margin:12px 0}.memory-item{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#1a1814;padding:10px;border-radius:10px;font-size:12px}.memory-item button{background:none;border:0;color:#d8b56e;font-size:11px}
+    textarea{width:100%;min-height:76px;background:#0c0c0b;border:1px solid #393024;border-radius:12px;color:var(--white);padding:12px;resize:vertical}
+    .goldbtn{background:linear-gradient(135deg,#e6c77f,#a77b36);border:0;color:#17110a;padding:11px 14px;border-radius:11px;font-weight:700;font-size:12px;margin-top:9px}
+    .quick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.quick button{background:#15130f;border:1px solid #3a2e1b;color:#d9c79f;border-radius:12px;padding:12px 8px;font-size:12px}
+    footer{font-size:9px;color:#6e675b;text-align:center;padding:12px 0 18px;line-height:1.5}
+    .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#2a2113;border:1px solid #765b2e;color:#f0d69b;padding:10px 14px;border-radius:12px;font-size:12px;display:none;max-width:90%;z-index:5}
+    @media(min-width:600px){.app{padding-left:28px;padding-right:28px}.hero{padding-top:32px}#messages{max-height:50dvh}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><div class="mark">V</div><div><h1>VON AI</h1><small>THE STORYTELLER • YOUR HOMIE</small></div></div>
+    <div class="status" id="status">DEMO MODE</div>
+  </header>
+  <section class="hero">
+    <div class="portrait"><span>V</span></div>
+    <h2>WHAT'S THE WORD?</h2>
+    <p>An independent AI companion with a storyteller's energy.</p>
+  </section>
+  <nav class="tabs">
+    <button class="tab active" data-tab="chat">CHAT</button>
+    <button class="tab" data-tab="music">MUSIC</button>
+    <button class="tab" data-tab="memory">MEMORY</button>
+  </nav>
+  <section class="view active" id="chat">
+    <div id="messages" aria-live="polite">
+      <div class="bubble assistant"><span class="who">VON AI</span>Ayy, what's good? I'm VON AI — your independent AI homie. We can talk music, swap stories, plan your day, or just kick it. What's on your mind?</div>
+    </div>
+    <div class="quick">
+      <button data-prompt="Give me a few Chicago drill artists to check out.">🎧 Drill recommendations</button>
+      <button data-prompt="Tell me an original short story with a twist.">📖 Tell me a story</button>
+      <button data-prompt="Help me plan my day. Ask what you need.">📅 Plan my day</button>
+      <button data-prompt="Give me a music recommendation based on King Von's sound, without quoting lyrics.">🔥 Put me on</button>
+    </div>
+    <div class="composer">
+      <button class="iconbtn" id="record" aria-label="Record voice note">🎙</button>
+      <input id="message" placeholder="Say what's on your mind…" autocomplete="off">
+      <button class="send" id="send">➤</button>
+    </div>
+    <div class="hint">Tap 🎙 to record a voice note • Tap a reply to hear it read aloud</div>
+  </section>
+  <section class="view" id="music">
+    <div class="panel"><h3>THE MUSIC ROOM</h3><p>Ask VON AI about drill, hip-hop, artists, albums, storytelling, or get recommendations. This starter version uses the AI's music knowledge; live Spotify linking can be added later.</p></div>
+    <div class="quick">
+      <button data-prompt="Recommend 5 Chicago drill artists and one accessible starting track for each.">Chicago drill</button>
+      <button data-prompt="Explain what makes great rap storytelling, with examples but no song lyrics.">Rap storytelling</button>
+      <button data-prompt="Recommend artists for someone who likes King Von and explain why.">Similar artists</button>
+      <button data-prompt="Give me a 30-minute drill and hip-hop listening journey.">Listening journey</button>
+    </div>
+    <div class="panel"><h3>NO FAKE TRACKLISTS</h3><p>VON AI should be upfront if it isn't sure about a release date, track listing, or current streaming availability.</p></div>
+  </section>
+  <section class="view" id="memory">
+    <div class="panel"><h3>YOUR MEMORY</h3><p>Save details you want VON AI to use in future chats on this device. You can review or delete them anytime. This first version stores memory in this browser only.</p></div>
+    <textarea id="memoryInput" placeholder="Example: I live in Rotterdam, I like Chicago drill, and I prefer short, direct answers."></textarea>
+    <button class="goldbtn" id="saveMemory">SAVE MEMORY</button>
+    <div class="memory-list" id="memoryList"></div>
+    <div class="panel"><h3>YOUR CONTROL</h3><p>Clear saved memory and chat history from this device whenever you want.</p><button class="goldbtn" id="clearData">CLEAR MY DATA</button></div>
+  </section>
+  <footer>VON AI is an unofficial fictional AI companion. Not King Von, not endorsed by his estate. AI-generated responses may be inaccurate.</footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const $ = s => document.querySelector(s);
+const messagesEl = $("#messages");
+let history = JSON.parse(localStorage.getItem("von_history") || "[]");
+let memory = JSON.parse(localStorage.getItem("von_memory") || "[]");
+let recorder, chunks = [], recording = false;
+
+function toast(t){const el=$("#toast");el.textContent=t;el.style.display="block";setTimeout(()=>el.style.display="none",2600)}
+function addBubble(role,text,speakable=false){
+  const d=document.createElement("div");d.className="bubble "+role;
+  const who=document.createElement("span");who.className="who";who.textContent=role==="assistant"?"VON AI":"YOU";d.append(who,document.createTextNode(text));
+  if(role==="assistant"){d.title="Tap to hear";d.addEventListener("click",()=>speak(text))}
+  messagesEl.append(d);messagesEl.scrollTop=messagesEl.scrollHeight;
+}
+function speak(text){
+  if(!("speechSynthesis" in window)){toast("Speech playback isn't supported in this browser.");return}
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=1.02;u.pitch=.94;speechSynthesis.speak(u);
+}
+function saveHistory(){localStorage.setItem("von_history",JSON.stringify(history.slice(-40)))}
+function renderMemory(){
+  $("#memoryList").innerHTML="";
+  memory.forEach((m,i)=>{const row=document.createElement("div");row.className="memory-item";const span=document.createElement("span");span.textContent=m;const b=document.createElement("button");b.textContent="DELETE";b.onclick=()=>{memory.splice(i,1);localStorage.setItem("von_memory",JSON.stringify(memory));renderMemory()};row.append(span,b);$("#memoryList").append(row)});
+}
+async function sendMessage(text){
+  text=(text||"").trim();if(!text)return;
+  $("#message").value="";addBubble("user",text);history.push({role:"user",content:text});saveHistory();
+  const pending=document.createElement("div");pending.className="bubble assistant";pending.textContent="VON AI is thinking…";messagesEl.append(pending);messagesEl.scrollTop=messagesEl.scrollHeight;
+  try{
+    const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:history.slice(-16),memory:memory.join("\n")})});
+    const data=await r.json();if(!r.ok)throw new Error(data.error||"Something went wrong.");
+    pending.remove();addBubble("assistant",data.reply);history.push({role:"assistant",content:data.reply});saveHistory();
+  }catch(e){
+    pending.remove();
+    const msg=e.message.includes("Failed to fetch")?"The AI server isn't connected yet. Add your API key in the project Secrets and run the app.":e.message;
+    addBubble("assistant",msg);
+  }
+}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===b.dataset.tab))});
+$("#send").onclick=()=>sendMessage($("#message").value);
+$("#message").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage($("#message").value)});
+document.querySelectorAll("[data-prompt]").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.tab==="chat"));document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="chat"));sendMessage(b.dataset.prompt)});
+$("#saveMemory").onclick=()=>{const v=$("#memoryInput").value.trim();if(!v)return toast("Write a memory first.");memory.push(v);localStorage.setItem("von_memory",JSON.stringify(memory));$("#memoryInput").value="";renderMemory();toast("Memory saved on this device.")};
+$("#clearData").onclick=()=>{if(confirm("Delete all VON AI chat history and saved memories from this device?")){localStorage.removeItem("von_history");localStorage.removeItem("von_memory");history=[];memory=[];messagesEl.innerHTML="";addBubble("assistant","Fresh start. What's good?");renderMemory();toast("Your local data was cleared.")}};
+$("#record").onclick=async()=>{
+  if(recording){recorder.stop();return}
+  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toast("Voice recording isn't supported here. Try Safari or type your message.");return}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];
+    recorder=new MediaRecorder(stream);recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+    recorder.onstop=async()=>{
+      recording=false;$("#record").textContent="🎙";stream.getTracks().forEach(t=>t.stop());
+      const blob=new Blob(chunks,{type:recorder.mimeType||"audio/webm"});const fd=new FormData();fd.append("audio",blob,"voice-note.webm");toast("Transcribing your voice note…");
+      try{const r=await fetch("/api/transcribe",{method:"POST",body:fd});const d=await r.json();if(!r.ok)throw new Error(d.error);$("#message").value=d.text||"";if(d.text)sendMessage(d.text);else toast("I couldn't hear that clearly.");}catch(e){toast(e.message||"Transcription failed.");}
+    };
+    recorder.start();recording=true;$("#record").textContent="■";toast("Recording… tap the button again to send.");
+  }catch(e){toast("Microphone permission was denied or unavailable.")}
+};
+async function checkHealth(){try{const r=await fetch("/api/health");const d=await r.json();$("#status").textContent=d.configured?"AI CONNECTED":"ADD API KEY";}catch{$("#status").textContent="OFFLINE"}}
+if(history.length){messagesEl.innerHTML="";history.forEach(m=>addBubble(m.role,m.content))}
+renderMemory();checkHealth();
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
