@@ -1,0 +1,7 @@
+
+name = "von-ai-api"
+main = "worker.js"
+compatibility_date = "2026-11-13"
+
+[ai]
+binding = "AI"
