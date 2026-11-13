@@ -11,3 +11,4 @@ From an iPhone:
 4. In Safari, Share > Add to Home Screen.
 
 This is an unofficial King Von-inspired fictional AI companion, not endorsed by his estate.
+VON AI Backend deployment v1.0
